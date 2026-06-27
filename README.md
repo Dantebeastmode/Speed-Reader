@@ -2,3 +2,6 @@
 Making a speed reader that can help people read through long text quickly.
 This program is somthing i wanted to do for a while to help 
 me read though text without issue.
+################################
+CLIsCr.py
+is a plything terminal speed reader, don't know if there is a text limit
