@@ -1,0 +1,86 @@
+import tkinter as tk
+
+# --- Adj Placeholder event ---
+def clear_placeholder(event):
+    # When the user clicks, check if the default text is still there
+    if text_entry.get("1.0", tk.END).strip() == "Paste your text here...":
+        # If it is, delete it instantly so the box is empty!
+        text_entry.delete("1.0", tk.END)
+#rest base 
+def reset_app():
+    # Hide the reading label and the reset button
+    read_label.pack_forget()
+    reset_button.pack_forget()
+    
+    # Bring back the text box, speed menu, and start button
+    text_entry.pack(pady=20)
+    speed_frame.pack(pady=10)
+    start_button.pack(pady=10)
+
+def start_reading():
+    # Grab the text
+    raw_text = text_entry.get("1.0", tk.END)
+    words = raw_text.split()
+    
+    # Hide all the setup UI
+    text_entry.pack_forget()
+    speed_frame.pack_forget()
+    start_button.pack_forget()
+    
+    # Show the reading label and start
+    read_label.pack(expand=True)
+    show_next_word(words, 0)
+
+def show_next_word(word_list, current_index):
+    if current_index < len(word_list):
+        read_label.config(text=word_list[current_index])
+        current_speed = speed_var.get()
+        window.after(current_speed, show_next_word, word_list, current_index + 1)
+    else:
+        read_label.config(text="Finished!")
+        reset_button.pack(pady=20)
+
+# --- UI SETUP ---
+window = tk.Tk()
+window.title("SCR")
+window.geometry("500x400")
+#color
+window.configure(bg="#1e1e1e")
+
+# --- 2. UPDATE YOUR TEXT BOX SECTION ---
+text_entry = tk.Text(window, height=10, width=50)
+text_entry.pack(pady=20)
+text_entry.insert("1.0", "Paste your text here...")
+
+# This is the magic line! <FocusIn> means "When the user clicks inside this box"
+text_entry.bind("<FocusIn>", clear_placeholder)
+
+
+# --- THE SPEED MODIFIER MENU ---
+speed_frame = tk.Frame(window, bg="#2b2b2b")
+speed_frame.pack(pady=10)
+tk.Label(speed_frame, text="Select Speed:", bg="#2b2b2b", fg="white").pack()
+
+speed_var = tk.IntVar()
+speed_var.set(200)
+
+#speed 
+#color bg="#2b2b2b", fg="white", selectcolor="black"
+tk.Radiobutton(speed_frame, text="Turtle", variable=speed_var, value=800, bg="#2b2b2b", fg="white", selectcolor="black").pack(side=tk.LEFT, padx=5)
+tk.Radiobutton(speed_frame, text="Slower", variable=speed_var, value=400, bg="#2b2b2b", fg="white", selectcolor="black").pack(side=tk.LEFT, padx=5)
+tk.Radiobutton(speed_frame, text="Normal", variable=speed_var, value=200, bg="#2b2b2b", fg="white", selectcolor="black").pack(side=tk.LEFT, padx=5)
+tk.Radiobutton(speed_frame, text="Fast", variable=speed_var, value=100, bg="#2b2b2b", fg="white", selectcolor="black").pack(side=tk.LEFT, padx=5)
+tk.Radiobutton(speed_frame, text="Tester", variable=speed_var, value=50, bg="#2b2b2b", fg="white", selectcolor="black").pack(side=tk.LEFT, padx=5)
+
+# --- START BUTTON & LABEL ---
+start_button = tk.Button(window, text="Start Reading", command=start_reading, font=("Arial", 14))
+start_button.pack(pady=10)
+
+#bg="#2b2b2b", fg="white"
+read_label = tk.Label(window, text="", font=("Arial", 36, "bold"),bg="#2b2b2b", fg="white")
+
+
+#reset
+reset_button = tk.Button(window, text="Read Again / Reset", command=reset_app, font=("Arial", 14), bg="#444444", fg="white")
+
+window.mainloop()
